@@ -1,7 +1,7 @@
 import { Router } from "express"
 import {getEmployees, createEmployees, updateEmployees, deleteEmployees, getEmployee, getXpusuarios } from '../controllers/empleyees-controlles.js'
-
-const { loginUser } = require('../controllers/loginController');
+import {loginUser} from '../controllers/empleyees-controlles.js'
+//const { loginUser } = require('../controllers/empleyees-controlles.js');
 
 const router = Router()
 

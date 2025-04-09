@@ -97,8 +97,9 @@ export const getXpusuarios = async ( req, res ) => {
 }
 
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { usu_correo, usu_clave } = req.body;
+  console.log(usu_correo, usu_clave)
 
   if (!usu_correo || !usu_clave) {
     return res.status(400).json({ success: false, message: 'Correo y clave requeridos' });
@@ -106,7 +107,7 @@ const loginUser = async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      'SELECT id, usu_nombre, usu_correo FROM xp_usuarios WHERE usu_correo = ? AND usu_clave = ?',
+      'SELECT * FROM xp_usuarios WHERE usu_correo = ? AND usu_clave = ?',
       [usu_correo, usu_clave]
     );
 
@@ -121,7 +122,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = {
+/*module.exports = {
   loginUser,
-};
+};*/
 
