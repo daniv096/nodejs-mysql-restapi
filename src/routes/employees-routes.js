@@ -1,6 +1,8 @@
 import { Router } from "express"
 import {getEmployees, createEmployees, updateEmployees, deleteEmployees, getEmployee, getXpusuarios } from '../controllers/empleyees-controlles.js'
 
+const { loginUser } = require('../controllers/loginController');
+
 const router = Router()
 
 router.get('/employees', getEmployees)
@@ -9,5 +11,6 @@ router.post('/employees', createEmployees)
 router.patch('/employees/:id', updateEmployees)
 router.delete('/employees/:id', deleteEmployees)
 router.get('/xpusuario', getXpusuarios)
+router.post('/login', loginUser)
 
 export default router
