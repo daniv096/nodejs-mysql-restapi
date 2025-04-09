@@ -56,6 +56,15 @@ export const deleteEmployees = async (req,res) => {
         })
     }
 }
+/*
+mysql://root:WLSpHFmYTudNZuPqkmmcEYHEOkQEzobg@metro.proxy.rlwy.net:38964/railway
+root
+WLSpHFmYTudNZuPqkmmcEYHEOkQEzobg
+metro.proxy.rlwy.net
+38964
+railway
+*/
+
 
 export const updateEmployees = async ( req, res) => {    
     const {id} = req.params
