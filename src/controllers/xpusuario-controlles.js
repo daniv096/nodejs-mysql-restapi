@@ -1,6 +1,7 @@
 import {pool} from '../db.js'
 
 export const getXpusuarios = async ( req, res ) => {
+    
     try {
     const [ rows ] = await pool.query('SELECT * FROM xp_usuarios')
     res.json(rows)    
