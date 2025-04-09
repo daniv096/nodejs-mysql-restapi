@@ -122,7 +122,93 @@ export const loginUser = async (req, res) => {
   }
 };
 
-/*module.exports = {
-  loginUser,
-};*/
+
+export const getMovimientosPorCedula = async (req, res) => {
+    const { cedula } = req.params;
+  
+    try {
+      const [rows] = await pool.query(
+        "SELECT * FROM xp_movimientos WHERE mov_codigo = ?",
+        [cedula]
+      );
+  
+      if (rows.length === 0) {
+        return res.status(404).json({ message: "No se encontraron movimientos para esta cédula" });
+      }
+  
+      res.json(rows);
+    } catch (error) {
+      res.status(500).json({ message: "Error al obtener movimientos", error });
+    }
+  };
+
+
+  export const createUsuario = async (req, res) => {
+    try {
+      const {
+        usu_codigo,
+        usu_cedula,
+        usu_nombre,
+        usu_apellido,
+        usu_correo,
+        usu_clave,
+        usu_telefono
+      } = req.body;
+  
+      const [rows] = await pool.query(
+        'INSERT INTO xp_usuarios (usu_codigo, usu_cedula, usu_nombre, usu_apellido, usu_correo, usu_clave, usu_telefono) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [usu_codigo, usu_cedula, usu_nombre, usu_apellido, usu_correo, usu_clave, usu_telefono]
+      );
+  
+      res.send({
+        usu_codigo,
+        usu_cedula,
+        usu_nombre,
+        usu_apellido,
+        usu_correo,
+        usu_clave,
+        usu_telefono
+      });
+    } catch (error) {
+      console.error('Error en createUsuario:', error);
+      return res.status(500).json({
+        message: 'Something went wrong',
+      });
+    }
+  };
+
+
+  export const createxUsuario = async (req, res) => {
+    try {
+      const {
+        usu_codigo,
+        usu_cedula,
+        usu_nombre,
+        usu_apellido,
+        usu_correo,
+        usu_clave,
+        usu_telefono          
+      } = req.body;
+      console.log(usu_codigo, usu_cedula, usu_nombre, usu_apellido, usu_correo, usu_clave, usu_telefono)
+      const [rows] = await pool.query(
+        'INSERT INTO xp_usuarios (usu_codigo, usu_cedula, usu_nombre, usu_apellido, usu_correo, usu_clave, usu_telefono ) VALUES (?,?,?,?,?,?,? )',
+        [usu_codigo, usu_cedula, usu_nombre, usu_apellido, usu_correo, usu_clave, usu_telefono]
+      );
+  
+      res.send({
+        usu_codigo,
+        usu_cedula,
+        usu_nombre,
+        usu_apellido,
+        usu_correo,
+        usu_clave,
+        usu_telefono
+      });
+    } catch (error) {
+      console.error('Error en createUsuario:', error);
+      return res.status(500).json({
+        message: 'Something went wrong',
+      });
+    }
+  };
 
