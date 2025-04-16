@@ -274,5 +274,8 @@ export const getMovimientosPorCedula = async (req, res) => {
       res.status(500).json({ error: 'Error al crear los datos del usuario' });
     }
   };
+
+
+  /// rpuebas //
   
   
