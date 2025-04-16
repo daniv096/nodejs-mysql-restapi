@@ -303,6 +303,34 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
+  export const getUsuarioDetalle = async (req, res) => {
+    const { codigo } = req.params;
+  
+    try {
+      const [rows] = await pool.query(`
+        SELECT 
+          u.usu_codigo,
+          u.usu_nombre,
+          u.usu_apellido,
+          c.saldo_credito,
+          c.saldo_restante,
+          m.tipo_movimiento,
+          m.monto,
+          m.saldo_actual,
+          m.fecha_movimiento,
+          m.descripcion
+        FROM xp_usuarios u
+        JOIN xp_creditos c ON u.usu_codigo = c.usu_codigo
+        LEFT JOIN xp_movimientos_credito m ON u.usu_codigo = m.usu_codigo
+        WHERE u.usu_codigo = ?
+      `, [codigo]);
+  
+      res.json(rows);
+    } catch (error) {
+      console.error('Error al obtener detalle de usuario:', error);
+      res.status(500).json({ message: 'Error al obtener detalle del usuario' });
+    }
+  };
 
   /// rpuebas //
   

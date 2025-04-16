@@ -33,3 +33,5 @@ CREATE TABLE `xp_usuarios` (
   UNIQUE KEY `usu_codigo_UNIQUE` (`usu_codigo`),
   UNIQUE KEY `usu_cedula_UNIQUE` (`usu_cedula`)
 ) 
+
+7EHAALSS8XD2C3Q1GLXVXM2G tokrn de rec twillo
