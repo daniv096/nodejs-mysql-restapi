@@ -63,6 +63,13 @@ WLSpHFmYTudNZuPqkmmcEYHEOkQEzobg
 metro.proxy.rlwy.net
 38964
 railway
+
+mysql://
+root:
+AcyjfLpDUATsNCBjkxJlKbvMWVUMtxRv
+shinkansen.proxy.rlwy.net
+49572
+railway
 */
 
 
@@ -260,6 +267,17 @@ export const getMovimientosPorCedula = async (req, res) => {
       res.status(500).json({ message: 'Something went wrong' });
     }
   };
+
+  export const getUsuarios = async ( req, res ) => {
+    try {
+    const [ rows ] = await pool.query('SELECT * FROM xp_usuarios')
+    res.json(rows)    
+    } catch (error) {
+        return res.status(500).json({
+        message: 'Something goes wrong'
+        })
+    }
+}
   
   export const createxUsuario = async (req, res) => {
     const { cedula, foto } = req.body;
