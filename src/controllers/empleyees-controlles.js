@@ -237,6 +237,16 @@ export const getMovimientosPorCedula = async (req, res) => {
     const { cedula, nombre, apellido, correo, telefono, clave } = req.body;
   
     try {
+      // Verificar si la cédula ya existe
+      const [cedulaExistente] = await pool.query(
+        `SELECT usu_codigo FROM xp_usuarios WHERE usu_cedula = ?`,
+        [cedula]
+      );
+  
+      if (cedulaExistente.length > 0) {
+        return res.status(400).json({ message: 'La cédula ya está registrada' });
+      }
+  
       // Obtener el último código insertado
       const [rows] = await pool.query(`
         SELECT usu_codigo FROM xp_usuarios
@@ -264,7 +274,7 @@ export const getMovimientosPorCedula = async (req, res) => {
   
     } catch (error) {
       console.error('Error en createUsuario:', error);
-      res.status(500).json({ message: 'Something went wrong' });
+      res.status(500).json({ message: 'Algo salió mal al crear el usuario' });
     }
   };
 
