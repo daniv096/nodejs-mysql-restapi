@@ -5,6 +5,7 @@ import { getMovimientosPorCedula } from '../controllers/empleyees-controlles.js'
 import { createUsuario } from '../controllers/empleyees-controlles.js';
 import { createxUsuario } from '../controllers/empleyees-controlles.js';
 import { getUsuarios } from '../controllers/empleyees-controlles.js';
+import { getUsuarioDetalle } from '../controllers/empleyees-controlles.js';
 //const { loginUser } = require('../controllers/empleyees-controlles.js');
 
 const router = Router()
@@ -20,5 +21,6 @@ router.post('/movimientos', getMovimientosPorCedula)
 router.post('/createusu', createUsuario)
 router.post('/createxusu', createxUsuario)
 router.get('/usuarios', getUsuarios )
+router.get('/detalleusuario/:codigo', getUsuarioDetalle);
 
 export default router
