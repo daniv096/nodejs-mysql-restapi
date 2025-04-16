@@ -143,7 +143,7 @@ export const getMovimientosPorCedula = async (req, res) => {
   };
 
 
-  export const createUsuario = async (req, res) => {
+  /*export const createUsuario = async (req, res) => {
     try {
       const {
         usu_codigo,
@@ -175,10 +175,10 @@ export const getMovimientosPorCedula = async (req, res) => {
         message: 'Something went wrong',
       });
     }
-  };
+  };*/
 
 
-  export const createxUsuario = async (req, res) => {
+  /*export const createxUsuario = async (req, res) => {
     try {
       const {
         usu_codigo,
@@ -210,5 +210,69 @@ export const getMovimientosPorCedula = async (req, res) => {
         message: 'Something went wrong',
       });
     }
-  };
+  };*/
 
+  /*const createUsuario = async (req, res) => {
+    const { nombre, apellido, correo, telefono, clave } = req.body;
+    try {
+      const [result] = await pool.query(
+        'INSERT INTO xp_usuarios (usu_nombre, usu_apellido, usu_correo, usu_telefono, usu_clave) VALUES (?, ?, ?, ?, ?)',
+        [nombre, apellido, correo, telefono, clave]
+      );
+      res.json({ message: 'Usuario creado', id: result.insertId });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al crear el usuario' });
+    }
+  };*/
+
+  export const createUsuario = async (req, res) => {
+    const { cedula, nombre, apellido, correo, telefono, clave } = req.body;
+  
+    try {
+      // Obtener el último código insertado
+      const [rows] = await pool.query(`
+        SELECT usu_codigo FROM xp_usuarios
+        ORDER BY usu_codigo DESC
+        LIMIT 1
+      `);
+  
+      let nuevoCodigo = '0000000001';
+  
+      if (rows.length > 0) {
+        const ultimoCodigo = parseInt(rows[0].usu_codigo, 10);
+        const siguiente = ultimoCodigo + 1;
+        nuevoCodigo = siguiente.toString().padStart(10, '0');
+      }
+  
+      // Insertar nuevo usuario
+      await pool.query(
+        `INSERT INTO xp_usuarios 
+          (usu_codigo, usu_cedula, usu_nombre, usu_apellido, usu_correo, usu_clave, usu_telefono)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [nuevoCodigo, cedula, nombre, apellido, correo, clave, telefono]
+      );
+  
+      res.json({ message: 'Usuario creado exitosamente', codigo: nuevoCodigo });
+  
+    } catch (error) {
+      console.error('Error en createUsuario:', error);
+      res.status(500).json({ message: 'Something went wrong' });
+    }
+  };
+  
+  export const createxUsuario = async (req, res) => {
+    const { cedula, foto } = req.body;
+    try {
+      const [result] = await pool.query(
+        'INSERT INTO xp_datos (dat_cedula, dat_foto) VALUES (?, ?)',
+        [cedula, foto]
+      );
+      res.json({ message: 'Datos del usuario creados', id: result.insertId });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al crear los datos del usuario' });
+    }
+  };
+  
+  
