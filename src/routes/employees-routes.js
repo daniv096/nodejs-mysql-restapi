@@ -27,7 +27,7 @@ router.post('/createxusu', createxUsuario)
 router.get('/usuarios', getUsuarios )
 router.get('/detalleusuario/:codigo', getUsuarioDetalle);
 router.get('/idusuario/:codigo', getUsuario);
-//router.get('/idusuario/:codigo', getUsuario);
+router.get('/iduser/:codigo', Userdata);
 
 //Userdata
 
