@@ -129,6 +129,32 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const Userdata = async (req, res) => {
+  const { usu_codigo} = req.body;
+  //console.log(usu_correo, usu_clave)
+
+  if (!usu_correo || !usu_clave) {
+    return res.status(400).json({ success: false, message: 'Correo y clave requeridos' });
+  }
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM xp_usuarios WHERE usu_codigo = ? ',
+      [usu_codigo]
+    );
+
+    if (rows.length > 0) {
+      return res.json({ success: true, user: rows[0] });
+    } else {
+      return res.json({ success: false, message: 'Codigo incorecto' });
+    }
+  } catch (error) {
+    console.error('Error en login:', error);
+    return res.status(500).json({ success: false, message: 'Error en el servidor' });
+  }
+};
+
+
 
 export const getMovimientosPorCedula = async (req, res) => {
     const { cedula } = req.params;
@@ -331,6 +357,36 @@ export const getMovimientosPorCedula = async (req, res) => {
       res.status(500).json({ message: 'Error al obtener detalle del usuario' });
     }
   };
+
+  export const getUsuario = async (req, res) => {
+    const { codigo } = req.params;
+  
+    try {
+      const [rows] = await pool.query(`
+        SELECT 
+          u.usu_codigo,
+          u.usu_nombre,
+          u.usu_apellido,
+          c.saldo_credito,
+          c.saldo_restante,
+          m.tipo_movimiento,
+          m.monto,
+          m.saldo_actual,
+          m.fecha_movimiento,
+          m.descripcion
+        FROM xp_usuarios u
+        JOIN xp_creditos c ON u.usu_codigo = c.usu_codigo
+        LEFT JOIN xp_movimientos_credito m ON u.usu_codigo = m.usu_codigo
+        WHERE u.usu_codigo = ?
+      `, [codigo]);
+  
+      res.json(rows);
+    } catch (error) {
+      console.error('Error al obtener detalle de usuario:', error);
+      res.status(500).json({ message: 'Error al obtener detalle del usuario' });
+    }
+  };
+
 
   /// rpuebas //
   

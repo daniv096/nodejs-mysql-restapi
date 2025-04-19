@@ -6,7 +6,11 @@ import { createUsuario } from '../controllers/empleyees-controlles.js';
 import { createxUsuario } from '../controllers/empleyees-controlles.js';
 import { getUsuarios } from '../controllers/empleyees-controlles.js';
 import { getUsuarioDetalle } from '../controllers/empleyees-controlles.js';
+import { getUsuario } from '../controllers/empleyees-controlles.js';
+import { Userdata } from '../controllers/empleyees-controlles.js';
 //const { loginUser } = require('../controllers/empleyees-controlles.js');
+
+getXpusuarios
 
 const router = Router()
 
@@ -22,5 +26,9 @@ router.post('/createusu', createUsuario)
 router.post('/createxusu', createxUsuario)
 router.get('/usuarios', getUsuarios )
 router.get('/detalleusuario/:codigo', getUsuarioDetalle);
+router.get('/idusuario/:codigo', getUsuario);
+//router.get('/idusuario/:codigo', getUsuario);
+
+//Userdata
 
 export default router
