@@ -130,30 +130,28 @@ export const loginUser = async (req, res) => {
 };
 
 export const Userdata = async (req, res) => {
-  const { usu_codigo} = req.body;
-  //console.log(usu_correo, usu_clave)
+  const { usu_codigo } = req.body;
 
-  if (!usu_correo || !usu_clave) {
-    return res.status(400).json({ success: false, message: 'Correo y clave requeridos' });
+  if (!usu_codigo) {
+    return res.status(400).json({ success: false, message: 'Código de usuario requerido' });
   }
 
   try {
     const [rows] = await pool.query(
-      'SELECT * FROM xp_usuarios WHERE usu_codigo = ? ',
+      'SELECT * FROM xp_usuarios WHERE usu_codigo = ?',
       [usu_codigo]
     );
 
     if (rows.length > 0) {
       return res.json({ success: true, user: rows[0] });
     } else {
-      return res.json({ success: false, message: 'Codigo incorecto' });
+      return res.json({ success: false, message: 'Código incorrecto' });
     }
   } catch (error) {
-    console.error('Error en login:', error);
+    console.error('Error en consulta de usuario:', error);
     return res.status(500).json({ success: false, message: 'Error en el servidor' });
   }
 };
-
 
 
 export const getMovimientosPorCedula = async (req, res) => {
