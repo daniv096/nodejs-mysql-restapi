@@ -385,6 +385,16 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
+  export const getArticulos = async (req, res) => {
+    try {
+      const [rows] = await pool.query('SELECT * FROM xp_articulos');
+      res.json(rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al obtener artículos' });
+    }
+  };
+
 
   /// rpuebas //
   
