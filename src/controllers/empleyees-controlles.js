@@ -424,8 +424,9 @@ export const createCompra = async (req, res) => {
 export const registrarCuotas = async (req, res) => {
   const cuotas = req.body;
 
+  // Verificamos que sea un array válido
   if (!Array.isArray(cuotas) || cuotas.length === 0) {
-    return res.status(400).json({ message: 'Datos de cuotas incompletos' });
+    return res.status(400).json({ message: 'Datos de cuotas incompletos o formato incorrecto' });
   }
 
   try {
@@ -436,10 +437,18 @@ export const registrarCuotas = async (req, res) => {
         return res.status(400).json({ message: `Datos faltantes en la cuota #${i + 1}` });
       }
 
+      // Convertir fecha de "8/5/2025" a "2025-05-08"
+      const partesFecha = cuo_fecha_pago.split('/');
+      if (partesFecha.length !== 3) {
+        return res.status(400).json({ message: `Formato de fecha incorrecto en cuota #${i + 1}` });
+      }
+      const fechaFormateada = `${partesFecha[2]}-${partesFecha[1].padStart(2, '0')}-${partesFecha[0].padStart(2, '0')}`;
+
+      // Inserción en base de datos
       await pool.query(
         `INSERT INTO xp_cuotas (com_codigo, usu_codigo, cuo_numero, cuo_fecha_pago, cuo_monto)
          VALUES (?, ?, ?, ?, ?)`,
-        [com_codigo, usu_codigo, cuo_numero, cuo_fecha_pago, cuo_monto]
+        [com_codigo, usu_codigo, cuo_numero, fechaFormateada, cuo_monto]
       );
     }
 
