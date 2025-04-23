@@ -463,25 +463,39 @@ export const registrarCuotas = async (req, res) => {
   }
 };
 
-// POST /api/saldo
 export const actualizarSaldo = async (req, res) => {
-  const { usu_codigo, monto_a_financiar } = req.body;
+  const { usu_codigo, com_codigo } = req.body;
 
-  if (!usu_codigo || !monto_a_financiar) {
+  if (!usu_codigo || !com_codigo) {
     return res.status(400).json({ message: 'Datos de saldo incompletos' });
   }
 
   try {
+    // Sumar todas las cuotas asociadas a esta compra y usuario
+    const [cuotas] = await pool.query(
+      `SELECT SUM(cuo_monto) AS totalCuotas 
+       FROM xp_cuotas 
+       WHERE usu_codigo = ? AND com_codigo = ?`,
+      [usu_codigo, com_codigo]
+    );
+
+    const totalCuotas = cuotas[0].totalCuotas;
+
+    if (!totalCuotas) {
+      return res.status(400).json({ message: 'No se encontraron cuotas para esta compra' });
+    }
+
+    // Actualizar saldo_restante restando el total de cuotas
     await pool.query(
-      `UPDATE xp_creditos
-       SET saldo_restante = saldo_restante + ?
+      `UPDATE xp_creditos 
+       SET saldo_restante = saldo_restante - ? 
        WHERE usu_codigo = ?`,
-      [monto_a_financiar, usu_codigo]
+      [totalCuotas, usu_codigo]
     );
 
     res.json({
       message: 'Saldo actualizado correctamente',
-      monto_actualizado: monto_a_financiar
+      monto_restado: totalCuotas
     });
 
   } catch (error) {
@@ -489,4 +503,3 @@ export const actualizarSaldo = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar el saldo' });
   }
 };
-
