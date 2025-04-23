@@ -10,11 +10,8 @@ import { getUsuario } from '../controllers/empleyees-controlles.js';
 import { Userdata } from '../controllers/empleyees-controlles.js';
 import { getArticulos } from '../controllers/empleyees-controlles.js';
 import { createCompra } from '../controllers/empleyees-controlles.js';
-
-
-//const { loginUser } = require('../controllers/empleyees-controlles.js');
-
-getXpusuarios
+import {registrarCuotas} from '../controllers/empleyees-controlles.js';
+import {actualizarSaldo} from '../controllers/empleyees-controlles.js';
 
 const router = Router()
 
@@ -34,8 +31,7 @@ router.get('/idusuario/:codigo', getUsuario);
 router.post('/iduser', Userdata);
 router.get('/articulos', getArticulos);
 router.post('/createcompra', createCompra);
-
-
-//Userdata
+router.post('/registrarCuotas', registrarCuotas);
+router.post('/actualizarSaldo',actualizarSaldo);
 
 export default router

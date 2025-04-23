@@ -395,69 +395,84 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
-  export const createCompra = async (req, res) => {
-    const conn = await pool.getConnection();
-    await conn.beginTransaction();
-  
-    try {
-      const {
-        usu_codigo,
-        art_codigo,
-        com_cantidad,
-        com_cuota_inicial,
-        com_total,
-        com_cuotas,
-        lista_cuotas // Array de objetos: { cuo_fecha_pago, cuo_monto }
-      } = req.body;
-  
-      // 1. Insertar la compra
-      const [compraResult] = await conn.query(
-        `INSERT INTO xp_compras (art_codigo, usu_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [art_codigo, usu_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas]
+ // POST /api/compras
+export const createCompra = async (req, res) => {
+  const { usu_codigo, art_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas } = req.body;
+
+  try {
+    const [result] = await pool.query(
+      `INSERT INTO xp_compras (art_codigo, usu_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [art_codigo, usu_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas]
+    );
+
+    const com_codigo = result.insertId;
+
+    res.json({
+      message: 'Compra registrada con éxito',
+      com_codigo
+    });
+
+  } catch (error) {
+    console.error('Error al crear la compra:', error);
+    res.status(500).json({ message: 'Error al crear la compra' });
+  }
+}; 
+
+// POST /api/cuotas
+export const registrarCuotas = async (req, res) => {
+  const { com_codigo, lista_cuotas } = req.body;
+
+  if (!com_codigo || !Array.isArray(lista_cuotas) || lista_cuotas.length === 0) {
+    return res.status(400).json({ message: 'Datos de cuotas incompletos' });
+  }
+
+  try {
+    for (let i = 0; i < lista_cuotas.length; i++) {
+      const { cuo_fecha_pago, cuo_monto } = lista_cuotas[i];
+
+      await pool.query(
+        `INSERT INTO xp_cuotas (com_codigo, cuo_numero, cuo_fecha_pago, cuo_monto)
+         VALUES (?, ?, ?, ?)`,
+        [com_codigo, i + 1, cuo_fecha_pago, cuo_monto]
       );
-  
-      const com_codigo = compraResult.insertId;
-  
-      // 2. Insertar las cuotas
-      for (let i = 0; i < lista_cuotas.length; i++) {
-        const { cuo_fecha_pago, cuo_monto } = lista_cuotas[i];
-        await conn.query(
-          `INSERT INTO xp_cuotas (com_codigo, cuo_numero, cuo_fecha_pago, cuo_monto)
-           VALUES (?, ?, ?, ?)`,
-          [com_codigo, i + 1, cuo_fecha_pago, cuo_monto]
-        );
-      }
-  
-      // 3. Actualizar saldo_restante en xp_creditos
-      const saldo_a_financiar = com_total - com_cuota_inicial;
-  
-      await conn.query(
-        `UPDATE xp_creditos
-         SET saldo_restante = saldo_restante + ?
-         WHERE usu_codigo = ?`,
-        [saldo_a_financiar, usu_codigo]
-      );
-  
-      await conn.commit();
-  
-      res.send({
-        message: 'Compra registrada con éxito',
-        com_codigo,
-        cuotas_registradas: lista_cuotas.length,
-        saldo_financiado: saldo_a_financiar
-      });
-  
-    } catch (error) {
-      await conn.rollback();
-      console.error('Error en createCompra:', error);
-      res.status(500).json({ message: 'Algo salió mal al registrar la compra.' });
-    } finally {
-      conn.release();
     }
-  };
 
+    res.json({
+      message: 'Cuotas registradas con éxito',
+      total: lista_cuotas.length
+    });
 
-  /// rpuebas //
-  
-  
+  } catch (error) {
+    console.error('Error al registrar cuotas:', error);
+    res.status(500).json({ message: 'Error al registrar las cuotas' });
+  }
+};
+
+// POST /api/saldo
+export const actualizarSaldo = async (req, res) => {
+  const { usu_codigo, monto_a_financiar } = req.body;
+
+  if (!usu_codigo || !monto_a_financiar) {
+    return res.status(400).json({ message: 'Datos de saldo incompletos' });
+  }
+
+  try {
+    await pool.query(
+      `UPDATE xp_creditos
+       SET saldo_restante = saldo_restante + ?
+       WHERE usu_codigo = ?`,
+      [monto_a_financiar, usu_codigo]
+    );
+
+    res.json({
+      message: 'Saldo actualizado correctamente',
+      monto_actualizado: monto_a_financiar
+    });
+
+  } catch (error) {
+    console.error('Error al actualizar saldo:', error);
+    res.status(500).json({ message: 'Error al actualizar el saldo' });
+  }
+};
+
