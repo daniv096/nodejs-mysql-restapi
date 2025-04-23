@@ -419,28 +419,33 @@ export const createCompra = async (req, res) => {
   }
 }; 
 
-// POST /api/cuotas
-export const registrarCuotas = async (req, res) => {
-  const { com_codigo, lista_cuotas } = req.body;
 
-  if (!com_codigo || !Array.isArray(lista_cuotas) || lista_cuotas.length === 0) {
+
+export const registrarCuotas = async (req, res) => {
+  const cuotas = req.body;
+
+  if (!Array.isArray(cuotas) || cuotas.length === 0) {
     return res.status(400).json({ message: 'Datos de cuotas incompletos' });
   }
 
   try {
-    for (let i = 0; i < lista_cuotas.length; i++) {
-      const { cuo_fecha_pago, cuo_monto } = lista_cuotas[i];
+    for (let i = 0; i < cuotas.length; i++) {
+      const { com_codigo, usu_codigo, cuo_numero, cuo_fecha_pago, cuo_monto } = cuotas[i];
+
+      if (!com_codigo || !usu_codigo || !cuo_fecha_pago || !cuo_monto) {
+        return res.status(400).json({ message: `Datos faltantes en la cuota #${i + 1}` });
+      }
 
       await pool.query(
-        `INSERT INTO xp_cuotas (com_codigo, cuo_numero, cuo_fecha_pago, cuo_monto)
-         VALUES (?, ?, ?, ?)`,
-        [com_codigo, i + 1, cuo_fecha_pago, cuo_monto]
+        `INSERT INTO xp_cuotas (com_codigo, usu_codigo, cuo_numero, cuo_fecha_pago, cuo_monto)
+         VALUES (?, ?, ?, ?, ?)`,
+        [com_codigo, usu_codigo, cuo_numero, cuo_fecha_pago, cuo_monto]
       );
     }
 
     res.json({
       message: 'Cuotas registradas con éxito',
-      total: lista_cuotas.length
+      total: cuotas.length
     });
 
   } catch (error) {
