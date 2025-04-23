@@ -9,6 +9,8 @@ import { getUsuarioDetalle } from '../controllers/empleyees-controlles.js';
 import { getUsuario } from '../controllers/empleyees-controlles.js';
 import { Userdata } from '../controllers/empleyees-controlles.js';
 import { getArticulos } from '../controllers/empleyees-controlles.js';
+import { createCompra } from '../controllers/empleyees-controlles.js';
+
 
 //const { loginUser } = require('../controllers/empleyees-controlles.js');
 
@@ -31,6 +33,7 @@ router.get('/detalleusuario/:codigo', getUsuarioDetalle);
 router.get('/idusuario/:codigo', getUsuario);
 router.post('/iduser', Userdata);
 router.get('/articulos', getArticulos);
+router.post('/createcompra', createCompra);
 
 
 //Userdata

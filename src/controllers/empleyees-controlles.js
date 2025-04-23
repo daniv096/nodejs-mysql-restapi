@@ -395,6 +395,68 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
+  export const createCompra = async (req, res) => {
+    const conn = await pool.getConnection();
+    await conn.beginTransaction();
+  
+    try {
+      const {
+        usu_codigo,
+        art_codigo,
+        com_cantidad,
+        com_cuota_inicial,
+        com_total,
+        com_cuotas,
+        lista_cuotas // Array de objetos: { cuo_fecha_pago, cuo_monto }
+      } = req.body;
+  
+      // 1. Insertar la compra
+      const [compraResult] = await conn.query(
+        `INSERT INTO xp_compras (art_codigo, usu_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [art_codigo, usu_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas]
+      );
+  
+      const com_codigo = compraResult.insertId;
+  
+      // 2. Insertar las cuotas
+      for (let i = 0; i < lista_cuotas.length; i++) {
+        const { cuo_fecha_pago, cuo_monto } = lista_cuotas[i];
+        await conn.query(
+          `INSERT INTO xp_cuotas (com_codigo, cuo_numero, cuo_fecha_pago, cuo_monto)
+           VALUES (?, ?, ?, ?)`,
+          [com_codigo, i + 1, cuo_fecha_pago, cuo_monto]
+        );
+      }
+  
+      // 3. Actualizar saldo_restante en xp_creditos
+      const saldo_a_financiar = com_total - com_cuota_inicial;
+  
+      await conn.query(
+        `UPDATE xp_creditos
+         SET saldo_restante = saldo_restante + ?
+         WHERE usu_codigo = ?`,
+        [saldo_a_financiar, usu_codigo]
+      );
+  
+      await conn.commit();
+  
+      res.send({
+        message: 'Compra registrada con éxito',
+        com_codigo,
+        cuotas_registradas: lista_cuotas.length,
+        saldo_financiado: saldo_a_financiar
+      });
+  
+    } catch (error) {
+      await conn.rollback();
+      console.error('Error en createCompra:', error);
+      res.status(500).json({ message: 'Algo salió mal al registrar la compra.' });
+    } finally {
+      conn.release();
+    }
+  };
+
 
   /// rpuebas //
   
