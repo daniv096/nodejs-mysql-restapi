@@ -387,7 +387,7 @@ export const getMovimientosPorCedula = async (req, res) => {
 
   export const getArticulos = async (req, res) => {
     try {
-      const [rows] = await pool.query('SELECT * FROM xp_articulos');
+      const [rows] = await pool.query('SELECT * FROM xp_articulos WHERE art_tipo = "P"');
       res.json(rows);
     } catch (error) {
       console.error(error);
