@@ -31,7 +31,7 @@ router.get('/detalleusuario/:codigo', getUsuarioDetalle);
 router.get('/idusuario/:codigo', getUsuario);
 router.post('/iduser', Userdata);
 router.get('/articulos', getArticulos);
-router.get('/gettiendas', getTiendas);
+router.get('/tiendas', getTiendas);
 router.post('/createcompra', createCompra);
 router.post('/registrarCuotas', registrarCuotas);
 router.post('/actualizarSaldo',actualizarSaldo);
