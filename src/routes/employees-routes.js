@@ -12,6 +12,7 @@ import { getArticulos } from '../controllers/empleyees-controlles.js';
 import { createCompra } from '../controllers/empleyees-controlles.js';
 import {registrarCuotas} from '../controllers/empleyees-controlles.js';
 import {actualizarSaldo} from '../controllers/empleyees-controlles.js';
+import { getTiendas } from '../controllers/empleyees-controlles.js';
 
 const router = Router()
 
@@ -30,6 +31,7 @@ router.get('/detalleusuario/:codigo', getUsuarioDetalle);
 router.get('/idusuario/:codigo', getUsuario);
 router.post('/iduser', Userdata);
 router.get('/articulos', getArticulos);
+router.get('/gettiendas', getTiendas);
 router.post('/createcompra', createCompra);
 router.post('/registrarCuotas', registrarCuotas);
 router.post('/actualizarSaldo',actualizarSaldo);
