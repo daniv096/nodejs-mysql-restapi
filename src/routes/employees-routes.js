@@ -36,6 +36,6 @@ router.get('/tiendas', getTiendas);
 router.post('/createcompra', createCompra);
 router.post('/registrarCuotas', registrarCuotas);
 router.post('/actualizarSaldo',actualizarSaldo);
-router.post('/categoria', getCategoria);
+router.get('/categoria', getCategoria);
 
 export default router
