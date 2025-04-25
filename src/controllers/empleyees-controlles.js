@@ -411,7 +411,7 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
-  export const getCatagoria = async (req, res) => {
+  export const getCategoria = async (req, res) => {
     try {
       const [rows] = await pool.query(
         'SELECT * FROM xp_categoria'
