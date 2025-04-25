@@ -411,6 +411,19 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
+  export const getCatagoria = async (req, res) => {
+    try {
+      const [rows] = await pool.query(
+        'SELECT * FROM xp_categoria'
+      );
+      res.json(rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al obtener categorias' });
+    }
+  };
+
+
  // POST /api/compras
 export const createCompra = async (req, res) => {
   const { usu_codigo, art_codigo, com_cantidad, com_cuota_inicial, com_total, com_cuotas } = req.body;
