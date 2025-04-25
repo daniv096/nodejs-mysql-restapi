@@ -398,20 +398,6 @@ export const getMovimientosPorCedula = async (req, res) => {
     }
   };
 
-
-  export const getTiendas = async (req, res) => {
-    try {
-      const [rows] = await pool.query(
-        'SELECT * FROM xp_tiendas'
-      );
-      res.json(rows);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error al obtener tiendas' });
-    }
-  };
-
-
   export const getArticulosPorTienda = async (req, res) => {
     const { tiendaId } = req.params;  // Obtener el ID de la tienda desde los parámetros
   
@@ -555,5 +541,17 @@ export const actualizarSaldo = async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar saldo:', error);
     res.status(500).json({ message: 'Error al actualizar el saldo' });
+  }
+};
+
+export const getTiendas = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM xp_tiendas'
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener tiendas' });
   }
 };
