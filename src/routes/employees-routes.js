@@ -14,7 +14,7 @@ import {registrarCuotas} from '../controllers/empleyees-controlles.js';
 import {actualizarSaldo} from '../controllers/empleyees-controlles.js';
 import { getTiendas } from '../controllers/empleyees-controlles.js';
 import { getCategoria } from "../controllers/empleyees-controlles.js";
-import { getArticulosPorTienda } from "../controllers/empleyees-controlles.js";
+import { getArticulosPorTienda } from '../controllers/empleyees-controlles.js';
 
 const router = Router()
 
@@ -38,6 +38,6 @@ router.post('/createcompra', createCompra);
 router.post('/registrarCuotas', registrarCuotas);
 router.post('/actualizarSaldo',actualizarSaldo);
 router.get('/categoria', getCategoria);
-router.get('/artxtienda', getArticulosPorTienda);
+router.get('/artxtienda/:tiendaId', getArticulosPorTienda);
 
 export default router

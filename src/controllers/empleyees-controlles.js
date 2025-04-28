@@ -399,27 +399,31 @@ export const getMovimientosPorCedula = async (req, res) => {
   };
 
   export const getArticulosPorTienda = async (req, res) => {
-    const { tiendaId } = req.params;  // Obtener el ID de la tienda desde los parámetros
+    const { tiendaId } = req.params; // Obtenemos el ID de la tienda desde los parámetros
+  
+    // Validamos primero que tiendaId exista y sea un número
+    if (!tiendaId || isNaN(tiendaId)) {
+      return res.status(400).json({ message: 'ID de tienda inválido o faltante.' });
+    }
   
     try {
-      // Consultamos los artículos de la tienda usando el ID de la tienda
+      // Hacemos la consulta de artículos por tienda
       const [rows] = await pool.query(
         'SELECT * FROM xp_articulos WHERE tie_codigo = ?',
-        [tiendaId]  // Usamos el ID de la tienda en la consulta
+        [tiendaId]
       );
   
-      // Si no hay artículos, respondemos con un mensaje adecuado
       if (rows.length === 0) {
         return res.status(404).json({ message: 'No se encontraron artículos para esta tienda.' });
       }
   
-      // Respondemos con los artículos encontrados
-      res.json(rows);
+      res.json(rows); // Devolvemos los artículos encontrados
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error al obtener los artículos de la tienda' });
+      console.error('Error al obtener los artículos de la tienda:', error);
+      res.status(500).json({ message: 'Error interno del servidor al obtener los artículos de la tienda.' });
     }
   };
+
 
 
   export const getCategoria = async (req, res) => {
