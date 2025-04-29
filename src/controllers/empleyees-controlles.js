@@ -559,3 +559,27 @@ export const getTiendas = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener tiendas' });
   }
 };
+
+
+export const getSaldoEfectivo = async (req, res) => {
+  const { usu_codigo } = req.params;
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT saldo_credito FROM xp_creditos WHERE usu_codigo = ? AND tip_credito = ? LIMIT 1',
+      [usu_codigo, 'E']
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Saldo no encontrado para tipo E' });
+    }
+
+    res.json({ saldo_credito: rows[0].saldo_credito });
+  } catch (error) {
+    console.error('Error al obtener el saldo:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+
+
