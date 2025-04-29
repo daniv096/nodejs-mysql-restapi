@@ -15,7 +15,7 @@ import {actualizarSaldo} from '../controllers/empleyees-controlles.js';
 import { getTiendas } from '../controllers/empleyees-controlles.js';
 import { getCategoria } from "../controllers/empleyees-controlles.js";
 import { getArticulosPorTienda } from '../controllers/empleyees-controlles.js';
-import { getSaldoEfectivo } from '../controllers/empleyees-controlles';
+import { getSaldoEfectivo } from '../controllers/empleyees-controlles.js';
 
 
 const router = Router()
