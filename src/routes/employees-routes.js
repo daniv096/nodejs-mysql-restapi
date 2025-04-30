@@ -16,6 +16,7 @@ import { getTiendas } from '../controllers/empleyees-controlles.js';
 import { getCategoria } from "../controllers/empleyees-controlles.js";
 import { getArticulosPorTienda } from '../controllers/empleyees-controlles.js';
 import { getSaldoEfectivo } from '../controllers/empleyees-controlles.js';
+import { getBancos } from "../controllers/empleyees-controlles.js";
 
 
 const router = Router()
@@ -42,5 +43,6 @@ router.post('/actualizarSaldo',actualizarSaldo);
 router.get('/categoria', getCategoria);
 router.get('/artxtienda/:tiendaId', getArticulosPorTienda);
 router.get('/saldoefectivo/:usu_codigo', getSaldoEfectivo);
+router.get('/bancos', getBancos);
 
 export default router

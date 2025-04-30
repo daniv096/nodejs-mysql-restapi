@@ -581,5 +581,20 @@ export const getSaldoEfectivo = async (req, res) => {
   }
 };
 
+export const getBancos = async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT ban_codigo, Ban_nombre FROM xp_bancos ORDER BY Ban_nombre ASC');
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron bancos registrados' });
+    }
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los bancos:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
 
 
