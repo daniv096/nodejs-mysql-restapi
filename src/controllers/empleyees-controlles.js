@@ -618,4 +618,25 @@ export const getCuentasUsuario = async (req, res) => {
 };
 
 
+export const getMovimientosPago = async (req, res) => {
+  const { usu_codigo } = req.params;
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM xp_pagos_avance WHERE usu_codigo = ? ORDER BY fecha_pago DESC',
+      [usu_codigo]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron movimientos para este usuario.' });
+    }
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los movimientos de pago:', error);
+    res.status(500).json({ message: 'Error del servidor al obtener los movimientos de pago' });
+  }
+};
+
+
 
