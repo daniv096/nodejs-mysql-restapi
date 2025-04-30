@@ -597,4 +597,25 @@ export const getBancos = async (req, res) => {
 };
 
 
+export const getCuentasUsuario = async (req, res) => {
+  const { usu_codigo } = req.params;
+
+  try {
+    const [rows] = await pool.query(
+      'SELECT cta_numcel AS telefono, cta_cedula AS cedula, cta_numcta AS banco FROM xp_cuentausu WHERE cta_codcli = ?',
+      [usu_codigo]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No hay cuentas guardadas para este usuario' });
+    }
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener las cuentas:', error);
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+
 
