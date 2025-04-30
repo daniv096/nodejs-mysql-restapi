@@ -640,3 +640,91 @@ export const getMovimientosPago = async (req, res) => {
 
 //pruebas de envios
 
+
+// Función para generar un número de referencia único de 10 dígitos
+const generarNumeroReferencia = async () => {
+  let numeroReferencia = '';
+  let existe = true;
+
+  // Asegurarse de que el número generado no exista en la base de datos
+  while (existe) {
+    // Generar un número aleatorio de 10 dígitos
+    numeroReferencia = Math.random().toString().slice(2, 12); // Toma los primeros 10 dígitos
+
+    try {
+      // Verificar si el número de referencia ya existe en la base de datos
+      const [rows] = await pool.query('SELECT * FROM xp_pagos_avance WHERE mov_numref = ?', [numeroReferencia]);
+
+      // Si no existe, salimos del loop
+      if (rows.length === 0) {
+        existe = false;
+      }
+    } catch (error) {
+      console.error('Error al verificar el número de referencia:', error);
+      throw new Error('Error al generar el número de referencia');
+    }
+  }
+
+  // Devolver el número de referencia único
+  return numeroReferencia;
+};
+
+export const crearMovimiento = async (req, res) => {
+  const {
+    fecha_pago,
+    monto_pago,
+    monto_interes,
+    total_pagado,
+    usu_codigo,
+    banco_pago,
+    haber,
+    tipo_pago,
+    cuenta_destino,
+    tipo_cuenta,
+    estatus,
+    descripcion,
+  } = req.body;
+
+  try {
+    // Generar el número de referencia único
+    const mov_numref = await generarNumeroReferencia();
+
+    // Verificar que todos los datos necesarios están presentes
+    if (!fecha_pago || !monto_pago || !usu_codigo ) {
+      return res.status(400).json({ message: 'Faltan datos requeridos' });
+    }
+
+    // Consulta SQL para insertar el movimiento
+    const query = `
+      INSERT INTO xp_pagos_avance (
+        mov_numref, fecha_pago, monto_pago, monto_interes, total_pagado, 
+        usu_codigo, banco_pago, haber, tipo_pago, cuenta_destino, 
+        tipo_cuenta, estatus, descripcion
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      mov_numref,
+      fecha_pago,
+      monto_pago,
+      monto_interes || null,
+      total_pagado || null,
+      usu_codigo,
+      banco_pago,
+      haber,
+      tipo_pago,
+      cuenta_destino,
+      tipo_cuenta,
+      estatus || 'pendiente',
+      descripcion || '',
+    ];
+
+    const [result] = await pool.query(query, values);
+
+    // Si la inserción fue exitosa
+    res.status(201).json({ message: 'Movimiento registrado correctamente', id: result.insertId });
+  } catch (error) {
+    console.error('Error al guardar el movimiento:', error);
+    res.status(500).json({ message: 'Error del servidor al guardar el movimiento' });
+  }
+};
