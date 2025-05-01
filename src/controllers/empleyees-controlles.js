@@ -730,7 +730,7 @@ export const crearMovimiento = async (req, res) => {
 };
 
 
-export const descontarCredito = async (req, res) => {
+export const desCredito = async (req, res) => {
   const { usu_codigo, monto } = req.body;
 
   try {
@@ -764,5 +764,3 @@ export const descontarCredito = async (req, res) => {
     res.status(500).json({ message: 'Error del servidor al descontar crédito' });
   }
 };
-
-//nuav aprueba
