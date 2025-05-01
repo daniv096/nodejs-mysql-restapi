@@ -729,4 +729,40 @@ export const crearMovimiento = async (req, res) => {
   }
 };
 
+
+export const descontarCredito = async (req, res) => {
+  const { usu_codigo, monto } = req.body;
+
+  try {
+    // Buscar si el crédito tipo E existe
+    const [credito] = await db.query(
+      "SELECT saldo_credito FROM xp_creditos WHERE usu_codigo = ? AND tip_credito = 'E'",
+      [usu_codigo]
+    );
+
+    if (credito.length === 0) {
+      return res.status(404).json({ message: 'Crédito tipo E no encontrado para este usuario' });
+    }
+
+    const saldoActual = parseFloat(credito[0].saldo_credito);
+    const montoDescontar = parseFloat(monto);
+
+    if (montoDescontar > saldoActual) {
+      return res.status(400).json({ message: 'Saldo insuficiente para descontar' });
+    }
+
+    // Descontar del saldo_credito
+    await db.query(
+      "UPDATE xp_creditos SET saldo_credito = saldo_credito - ? WHERE usu_codigo = ? AND tip_credito = 'E'",
+      [montoDescontar, usu_codigo]
+    );
+
+    res.status(200).json({ message: 'Saldo de crédito descontado exitosamente' });
+
+  } catch (error) {
+    console.error('❌ Error al descontar crédito:', error);
+    res.status(500).json({ message: 'Error del servidor al descontar crédito' });
+  }
+};
+
 //nuav aprueba

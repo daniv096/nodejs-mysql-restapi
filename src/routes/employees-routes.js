@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { getEmployees, createEmployees, updateEmployees, deleteEmployees, getEmployee, getXpusuarios } from '../controllers/empleyees-controlles.js'
+import { getEmployees, createEmployees, updateEmployees, deleteEmployees, getEmployee, getXpusuarios, descontarCredito } from '../controllers/empleyees-controlles.js'
 import { loginUser } from '../controllers/empleyees-controlles.js'
 import { getMovimientosPorCedula } from '../controllers/empleyees-controlles.js';
 import { createUsuario } from '../controllers/empleyees-controlles.js';
@@ -20,6 +20,7 @@ import { getBancos } from "../controllers/empleyees-controlles.js";
 import { getCuentasUsuario } from "../controllers/empleyees-controlles.js";
 import { getMovimientosPago } from "../controllers/empleyees-controlles.js";
 import { crearMovimiento } from '../controllers/empleyees-controlles.js'; 
+import { descontarCredito } from "../controllers/empleyees-controlles.js";
 
 
 const router = Router()
@@ -50,6 +51,10 @@ router.get('/bancos', getBancos);
 router.get('/cuentas/:usu_codigo', getCuentasUsuario);
 router.get('/movimientos/:usu_codigo', getMovimientosPago);
 router.post('/crearmovavance', crearMovimiento);
+router.post('/descontar-credito', descontarCredito);
 
 
 export default router
+
+
+
