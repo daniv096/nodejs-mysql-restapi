@@ -20,7 +20,7 @@ import { getBancos } from "../controllers/empleyees-controlles.js";
 import { getCuentasUsuario } from "../controllers/empleyees-controlles.js";
 import { getMovimientosPago } from "../controllers/empleyees-controlles.js";
 import { crearMovimiento } from '../controllers/empleyees-controlles.js'; 
-import { descontarCredito } from "../controllers/empleyees-controlles.js";
+import { descontarCredito } from '../controllers/empleyees-controlles.js'; 
 
 
 const router = Router()
