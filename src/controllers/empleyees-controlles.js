@@ -732,11 +732,11 @@ export const crearMovimiento = async (req, res) => {
 
 export const desCredito = async (req, res) => {
   const { usu_codigo, monto } = req.body;
+
   console.log('📥 Datos recibidos para descuento:', req.body);
 
   try {
-    // Buscar si el crédito tipo E existe
-    const [credito] = await db.query(
+    const [credito] = await pool.query(  // << Reemplaza db por pool
       "SELECT saldo_credito FROM xp_creditos WHERE usu_codigo = ? AND tip_credito = 'E'",
       [usu_codigo]
     );
@@ -752,8 +752,7 @@ export const desCredito = async (req, res) => {
       return res.status(400).json({ message: 'Saldo insuficiente para descontar' });
     }
 
-    // Descontar del saldo_credito
-    await db.query(
+    await pool.query(  // << También aquí
       "UPDATE xp_creditos SET saldo_credito = saldo_credito - ? WHERE usu_codigo = ? AND tip_credito = 'E'",
       [montoDescontar, usu_codigo]
     );
