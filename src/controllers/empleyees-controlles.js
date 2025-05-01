@@ -732,6 +732,7 @@ export const crearMovimiento = async (req, res) => {
 
 export const desCredito = async (req, res) => {
   const { usu_codigo, monto } = req.body;
+  console.log('📥 Datos recibidos para descuento:', req.body);
 
   try {
     // Buscar si el crédito tipo E existe
@@ -760,7 +761,7 @@ export const desCredito = async (req, res) => {
     res.status(200).json({ message: 'Saldo de crédito descontado exitosamente' });
 
   } catch (error) {
-    console.error('❌ Error al descontar crédito:', error);
+    console.error('❌ Error al descontar crédito:', error.message, error.stack);
     res.status(500).json({ message: 'Error del servidor al descontar crédito' });
   }
 };
