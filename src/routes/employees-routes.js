@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { getEmployees, createEmployees, updateEmployees, deleteEmployees, getEmployee, getXpusuarios, descontarCredito } from '../controllers/empleyees-controlles.js'
+import { getEmployees, createEmployees, updateEmployees, deleteEmployees, getEmployee, getXpusuarios} from '../controllers/empleyees-controlles.js'
 import { loginUser } from '../controllers/empleyees-controlles.js'
 import { getMovimientosPorCedula } from '../controllers/empleyees-controlles.js';
 import { createUsuario } from '../controllers/empleyees-controlles.js';
